@@ -6,13 +6,13 @@ const GitHubBlock: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="md:w-2/3 fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-spore-purple">Built in Public on GitHub</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-spore-purple">Join Our Community</h2>
             <p className="text-lg text-gray-200 mb-8">
-              SporeWave is fully open source. Contribute, fork, or report issues on our GitHub repo. 
-              Join our mission to build transparent psychedelic tools and content for all.
+              SporeWave welcomes collaboration. Connect with us, share ideas, and help build
+              the future of psychedelic research and wellness tools.
             </p>
             <a 
-              href="https://github.com/sporewave/website" 
+              href="https://github.com/lerskytech/SporeWave" 
               className="btn btn-primary flex items-center space-x-2 w-fit"
             >
               <svg className="w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
