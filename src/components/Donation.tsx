@@ -1,4 +1,5 @@
 import React from 'react';
+import KofiWidget from './KofiWidget';
 
 const Donation: React.FC = () => {
   return (
@@ -48,18 +49,11 @@ const Donation: React.FC = () => {
               </div>
               
               <div className="flex flex-col items-center mt-8 mb-4">
-                <a 
-                  href="https://ko-fi.com/sporewave" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transform hover:scale-105 transition-transform duration-300 w-full md:w-auto"
-                >
-                  <img 
-                    src="https://storage.ko-fi.com/cdn/kofi5.png" 
-                    alt="Support SporeWave on Ko-fi" 
-                    className="mx-auto w-64 h-auto rounded shadow-lg border-2 border-spore-purple/30"
-                  />
-                </a>
+                <KofiWidget 
+                  kofiId="B0B21GINMO" 
+                  color="#9900ff" 
+                  title="Support SporeWave on Ko-fi" 
+                />
                 <p className="text-gray-300 text-center mt-3">Help fund our mission with a donation</p>
               </div>
             </div>
