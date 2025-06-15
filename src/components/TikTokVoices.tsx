@@ -1,73 +1,143 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+// TypeScript declaration for TikTok global object
+declare global {
+  interface Window {
+    TikTok?: {
+      reload: () => void;
+    }
+  }
+}
+
 // Styles for TikTok Carousel - embedded to avoid external CSS dependency
 const carouselStyles = `
+  .tiktok-carousel-wrapper {
+    position: relative;
+    max-width: 100%;
+    margin: 0 auto;
+    touch-action: pan-y;
+    width: 100%;
+  }
+
   .tiktok-carousel-container {
     position: relative;
-    border-radius: 0.5rem;
-    overflow: hidden;
+    width: 100%;
+    max-width: 325px;
     margin: 0 auto;
-    max-width: 100%;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
     touch-action: pan-y;
   }
   
-  .glow-border {
-    box-shadow: 
-      0 0 5px #9333ea,
-      0 0 15px #9333ea,
-      0 0 25px #9333ea,
-      inset 0 0 5px #9333ea;
-    border: 2px solid #9333ea;
-    border-radius: 0.5rem;
-    z-index: 1;
+  .tiktok-carousel-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 8px;
     pointer-events: none;
-    animation: pulse 5s infinite alternate;
-    opacity: 0.8;
+    box-shadow: 0 0 10px 2px rgba(147, 51, 234, 0.4);
+    z-index: 1;
+    animation: subtle-pulse 3s infinite alternate;
   }
   
-  @keyframes pulse {
-    0% {
-      box-shadow: 
-        0 0 5px #9333ea,
-        0 0 15px #9333ea;
-      border-color: #9333ea;
-    }
-    50% {
-      box-shadow: 
-        0 0 10px #9333ea,
-        0 0 20px #9333ea,
-        0 0 30px #9333ea;
-      border-color: #a855f7;
-    }
-    100% {
-      box-shadow: 
-        0 0 15px #3b82f6,
-        0 0 25px #3b82f6,
-        0 0 35px #3b82f6;
-      border-color: #3b82f6;
-    }
+  @keyframes subtle-pulse {
+    0% { box-shadow: 0 0 8px 2px rgba(147, 51, 234, 0.3); }
+    100% { box-shadow: 0 0 12px 3px rgba(59, 130, 246, 0.5); }
   }
   
-  @media (max-width: 768px) {
-    .tiktok-carousel-container {
-      max-height: 80vh;
-      width: 100%;
-      margin: 0 auto;
+  .tiktok-slide {
+    width: 100%;
+    height: 575px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .tiktok-embed {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    max-width: 325px !important;
+    width: 100% !important;
+  }
+  
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+  }
+  
+  .carousel-arrow:hover {
+    background: #9333ea;
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .carousel-arrow.left {
+    left: -50px;
+  }
+  
+  .carousel-arrow.right {
+    right: -50px;
+  }
+
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    margin: 1rem auto;
+    gap: 8px;
+  }
+  
+  .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    padding: 0;
+  }
+  
+  .carousel-dot.active {
+    background-color: #9333ea;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px #9333ea;
+  }
+
+  @media (max-width: 640px) {
+    .carousel-arrow.left {
+      left: -20px;
+      width: 32px;
+      height: 32px;
     }
     
-    .aspect-w-9.aspect-h-16 {
-      padding-bottom: 177.78%;
+    .carousel-arrow.right {
+      right: -20px;
+      width: 32px;
+      height: 32px;
     }
-  }
-  
-  .tiktok-carousel-container button:hover {
-    transform: scale(1.1) translateY(-50%);
-    box-shadow: 0 0 10px #9333ea;
-  }
-  
-  .tiktok-carousel-container .bg-spore-purple {
-    box-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea;
+    
+    .tiktok-slide {
+      height: auto;
+      max-height: 100vh;
+    }
   }
 `;
 
@@ -130,89 +200,122 @@ const TikTokVoices: React.FC = () => {
     touchStartX.current = 0;
     touchEndX.current = 0;
   };
+  // Function to safely load and init TikTok embed script
+  useEffect(() => {
+    // Load TikTok embed script
+    if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
+      const script = document.createElement('script');
+      script.src = "https://www.tiktok.com/embed.js";
+      script.async = true;
+      
+      // Initialize TikTok widget when script loads or when slide changes
+      script.onload = () => {
+        if (window.TikTok) {
+          window.TikTok.reload();
+        }
+      };
+      
+      document.body.appendChild(script);
+      
+      return () => {
+        // Clean up script if component unmounts
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      };
+    }
+  }, []);
+  
+  // Initialize widget whenever the active slide changes
+  useEffect(() => {
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (window.TikTok) {
+        window.TikTok.reload();
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [activeSlide]);
+  
   return (
-    <section id="tiktok" className="section">
+    <section id="tiktok" className="section bg-gray-900 py-12">
       {/* Inject carousel styles */}
       <style dangerouslySetInnerHTML={{ __html: carouselStyles }} />
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        <div className="relative max-w-4xl mx-auto">
+        <div className="tiktok-carousel-wrapper max-w-xs mx-auto relative py-2">
           {/* TikTok Carousel */}
           <div 
-            className="tiktok-carousel-container overflow-hidden rounded-lg relative" 
+            className="tiktok-carousel-container" 
             ref={carouselRef}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className="absolute inset-0 rounded-lg glow-border"></div>
             <div 
-              className="flex transition-transform duration-500 ease-in-out w-full h-full will-change-transform" 
+              className="flex transition-transform duration-500 ease-in-out w-full will-change-transform" 
               style={{ transform: `translateX(-${activeSlide * 100}%)` }}
             >
-              {/* TikTok Video 1 */}
-              <div className="w-full flex-shrink-0 overflow-hidden">
-                <div className="aspect-w-9 aspect-h-16 bg-black">
-                  <iframe
-                    src="https://www.tiktok.com/embed/t/ZTjtUs53P/"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    className="w-full h-full border-0"
-                    title="SporeWave TikTok video 1"
-                    loading="lazy"
-                  ></iframe>
-                </div>
+              {/* TikTok Video 1 - Using official embed code */}
+              <div className="tiktok-slide">
+                <blockquote 
+                  className="tiktok-embed" 
+                  cite="https://www.tiktok.com/@sporewave/video/7341913553680987435" 
+                  data-video-id="7341913553680987435"
+                  style={{ visibility: activeSlide === 0 ? 'visible' : 'hidden', position: activeSlide === 0 ? 'static' : 'absolute' }}
+                >
+                  <section></section>
+                </blockquote>
               </div>
               
-              {/* TikTok Video 2 */}
-              <div className="w-full flex-shrink-0 overflow-hidden">
-                <div className="aspect-w-9 aspect-h-16 bg-black">
-                  <iframe
-                    src="https://www.tiktok.com/embed/t/ZTjtUpyaj/"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    className="w-full h-full border-0"
-                    title="SporeWave TikTok video 2"
-                    loading="lazy"
-                  ></iframe>
-                </div>
+              {/* TikTok Video 2 - Using official embed code */}
+              <div className="tiktok-slide">
+                <blockquote 
+                  className="tiktok-embed" 
+                  cite="https://www.tiktok.com/@sporewave/video/7341915623588111659" 
+                  data-video-id="7341915623588111659"
+                  style={{ visibility: activeSlide === 1 ? 'visible' : 'hidden', position: activeSlide === 1 ? 'static' : 'absolute' }}
+                >
+                  <section></section>
+                </blockquote>
               </div>
             </div>
-            
-            {/* Navigation buttons */}
-            <button 
-              onClick={prevSlide}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-spore-purple text-white p-3 rounded-r-lg z-10 focus:outline-none"
-              aria-label="Previous video"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
-              </svg>
-            </button>
-            
-            <button 
-              onClick={nextSlide}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-spore-purple text-white p-3 rounded-l-lg z-10 focus:outline-none"
-              aria-label="Next video"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-            </button>
-            
-            {/* Pagination dots */}
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-10">
-              {Array.from({ length: totalSlides }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActiveSlide(index)}
-                  className={`w-3 h-3 rounded-full focus:outline-none transition-colors ${index === activeSlide ? 'bg-spore-purple' : 'bg-white/50 hover:bg-white/80'}`}
-                  aria-label={`Go to video ${index + 1}`}
-                />
-              ))}
-            </div>
           </div>
+          
+          {/* Outside navigation buttons */}
+          <button 
+            onClick={prevSlide}
+            className="carousel-arrow left"
+            aria-label="Previous video"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          
+          <button 
+            onClick={nextSlide}
+            className="carousel-arrow right"
+            aria-label="Next video"
+          >
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+        
+        {/* Pagination dots */}
+        <div className="carousel-dots">
+          {Array.from({ length: totalSlides }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveSlide(index)}
+              className={`carousel-dot ${index === activeSlide ? 'active' : ''}`}
+              aria-label={`Go to video ${index + 1}`}
+            />
+          ))}
         </div>
         
         <div className="text-center mt-8">
