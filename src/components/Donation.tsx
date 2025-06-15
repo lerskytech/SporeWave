@@ -1,6 +1,24 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const Donation: React.FC = () => {
+  const kofiContainerRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const container = kofiContainerRef.current;
+    if (!container) return;
+    
+    // Clean the container
+    container.innerHTML = '';
+    
+    // Set the Ko-fi widget exactly as requested
+    container.innerHTML = `<script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support The Cause', '#9900ff', 'B0B21GINMO');kofiwidget2.draw();</script>`;
+    
+    return () => {
+      if (container) {
+        container.innerHTML = '';
+      }
+    };
+  }, []);
   return (
     <section id="donate" className="section bg-black/30">
       <div className="container mx-auto px-4">
@@ -48,18 +66,9 @@ const Donation: React.FC = () => {
               </div>
               
               <div className="flex flex-col items-center mt-8 mb-4">
-                <a 
-                  href="https://ko-fi.com/sporewave" 
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block transform hover:scale-105 transition-transform duration-300"
-                >
-                  <img 
-                    src="https://storage.ko-fi.com/cdn/kofi5.png"
-                    alt="Support SporeWave on Ko-fi"
-                    className="w-64 h-auto rounded shadow-lg border-2 border-spore-purple/50"
-                  />
-                </a>
+                <div className="ko-fi-container flex justify-center" ref={kofiContainerRef}>
+                  {/* Ko-fi widget will be inserted here by useEffect */}
+                </div>
                 <p className="text-gray-300 text-center mt-3">Help fund our mission with a donation</p>
               </div>
             </div>
