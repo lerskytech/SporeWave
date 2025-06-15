@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import GitHubBlock from './components/GitHubBlock';
+// GitHub section removed per user request
 import TikTokVoices from './components/TikTokVoices';
 import Research from './components/Research';
 import SonicHealing from './components/SonicHealing';
@@ -15,7 +15,6 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <GitHubBlock />
         <TikTokVoices />
         <Research />
         <SonicHealing />
