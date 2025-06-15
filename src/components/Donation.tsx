@@ -1,5 +1,5 @@
 import React from 'react';
-import KofiWidget from './KofiWidget';
+import KofiButton from './KofiButton';
 
 const Donation: React.FC = () => {
   return (
@@ -49,7 +49,7 @@ const Donation: React.FC = () => {
               </div>
               
               <div className="flex flex-col items-center mt-8 mb-4">
-                <KofiWidget 
+                <KofiButton 
                   kofiId="B0B21GINMO" 
                   color="#9900ff" 
                   title="Support SporeWave on Ko-fi" 
