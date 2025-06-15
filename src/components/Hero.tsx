@@ -10,11 +10,11 @@ const Hero: React.FC = () => {
               SporeWave
             </h1>
             <p className="text-xl md:text-2xl lg:text-3xl mb-8 text-gray-200">
-              Open Source. Psychedelic Healing. Real Stories, Real Science.
+              Psychedelic Healing. Real Stories, Real Science.
             </p>
             <div className="flex flex-wrap gap-4">
               <a 
-                href="https://github.com/sporewave/website" 
+                href="/#donate" 
                 className="btn btn-primary"
               >
                 Join the Movement

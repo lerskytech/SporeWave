@@ -50,19 +50,17 @@ const Partners: React.FC = () => {
             <div className="mt-10 space-y-6">
               <h3 className="text-2xl font-bold text-white">Join The Movement</h3>
               <p className="text-gray-200">
-                Through open-source collaboration and transparent science, we're building a community dedicated to healing, growth, and psychological wellness.
+                Through collaboration and transparent science, we're building a community dedicated to healing, growth, and psychological wellness.
               </p>
               <div className="flex flex-wrap justify-center gap-4 pt-2">
                 <a 
-                  href="https://github.com/sporewave/website" 
+                  href="/#donate" 
                   className="btn btn-primary"
-                  target="_blank" 
-                  rel="noreferrer"
                 >
                   Contribute
                 </a>
                 <a 
-                  href="#donate" 
+                  href="/#donate" 
                   className="btn border border-spore-purple text-white hover:bg-spore-purple/20"
                 >
                   Support
