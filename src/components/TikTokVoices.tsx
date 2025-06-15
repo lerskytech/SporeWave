@@ -1,107 +1,144 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import '../styles/TikTokCarousel.css';
 
 const TikTokVoices: React.FC = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const totalSlides = 2;
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % totalSlides);
+  };
+  
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+  
+  // Add keyboard navigation support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        nextSlide();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+  
+  // Touch event handlers for mobile swipe support
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  
+  const handleTouchEnd = () => {
+    const touchDiff = touchStartX.current - touchEndX.current;
+    
+    // Minimum swipe distance required (in pixels)
+    const minSwipeDistance = 50;
+    
+    if (touchDiff > minSwipeDistance) {
+      // Swipe left, go to next slide
+      nextSlide();
+    } else if (touchDiff < -minSwipeDistance) {
+      // Swipe right, go to previous slide
+      prevSlide();
+    }
+    
+    // Reset values
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
   return (
     <section id="tiktok" className="section">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {/* TikTok Video 1 */}
-          <div className="fade-in">
-            <div className="bg-black/30 rounded-lg overflow-hidden border border-spore-purple/30 relative">
-              <div className="aspect-w-2 aspect-h-3 relative">
-                <img 
-                  src="/images/SporeWave3.png" 
-                  alt="TikTok testimonial of veteran using psilocybin for trauma recovery – SporeWave." 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-spore-purple/80 flex items-center justify-center rounded-full">
-                    <svg className="w-8 h-8" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                    </svg>
-                  </div>
+        <div className="relative max-w-4xl mx-auto">
+          {/* TikTok Carousel */}
+          <div 
+            className="tiktok-carousel-container overflow-hidden rounded-lg relative" 
+            ref={carouselRef}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="absolute inset-0 rounded-lg glow-border"></div>
+            <div 
+              className="flex transition-transform duration-500 ease-in-out w-full h-full will-change-transform" 
+              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            >
+              {/* TikTok Video 1 */}
+              <div className="w-full flex-shrink-0 overflow-hidden">
+                <div className="aspect-w-9 aspect-h-16 bg-black">
+                  <iframe
+                    src="https://www.tiktok.com/embed/t/ZTjtUs53P/"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="w-full h-full border-0"
+                    title="SporeWave TikTok video 1"
+                    loading="lazy"
+                  ></iframe>
                 </div>
-                {/* TikTok Stats Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-black/0 p-4">
-                  <div className="flex items-center text-white space-x-4">
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                      </svg>
-                      <span>245.2K</span>
-                    </div>
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                      </svg>
-                      <span>18.6K</span>
-                    </div>
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M16 8v8H8V8h8m2-2H6v12h12V6z"/>
-                      </svg>
-                      <span>1.2M</span>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <span className="text-spore-blue text-sm">#psilocybin</span>
-                    <span className="text-spore-purple text-sm">#traumahealing</span>
-                    <span className="text-spore-pink text-sm">#microdosing</span>
-                  </div>
-                  <p className="text-sm mt-1 text-gray-300">@sporewave</p>
+              </div>
+              
+              {/* TikTok Video 2 */}
+              <div className="w-full flex-shrink-0 overflow-hidden">
+                <div className="aspect-w-9 aspect-h-16 bg-black">
+                  <iframe
+                    src="https://www.tiktok.com/embed/t/ZTjtUpyaj/"
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="w-full h-full border-0"
+                    title="SporeWave TikTok video 2"
+                    loading="lazy"
+                  ></iframe>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* TikTok Video 2 */}
-          <div className="fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="bg-black/30 rounded-lg overflow-hidden border border-spore-purple/30 relative">
-              <div className="aspect-w-2 aspect-h-3 relative">
-                <img 
-                  src="/images/SporeWave3.png" 
-                  alt="TikTok testimonial of veteran using psilocybin for trauma recovery – SporeWave." 
-                  className="w-full h-full object-cover"
+            
+            {/* Navigation buttons */}
+            <button 
+              onClick={prevSlide}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-spore-purple text-white p-3 rounded-r-lg z-10 focus:outline-none"
+              aria-label="Previous video"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            
+            <button 
+              onClick={nextSlide}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-spore-purple text-white p-3 rounded-l-lg z-10 focus:outline-none"
+              aria-label="Next video"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+            
+            {/* Pagination dots */}
+            <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-10">
+              {Array.from({ length: totalSlides }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveSlide(index)}
+                  className={`w-3 h-3 rounded-full focus:outline-none transition-colors ${index === activeSlide ? 'bg-spore-purple' : 'bg-white/50 hover:bg-white/80'}`}
+                  aria-label={`Go to video ${index + 1}`}
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 bg-spore-purple/80 flex items-center justify-center rounded-full">
-                    <svg className="w-8 h-8" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                    </svg>
-                  </div>
-                </div>
-                {/* TikTok Stats Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-black/0 p-4">
-                  <div className="flex items-center text-white space-x-4">
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                      </svg>
-                      <span>187.5K</span>
-                    </div>
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                      </svg>
-                      <span>12.3K</span>
-                    </div>
-                    <div className="flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M16 8v8H8V8h8m2-2H6v12h12V6z"/>
-                      </svg>
-                      <span>982K</span>
-                    </div>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <span className="text-spore-blue text-sm">#psilocybin</span>
-                    <span className="text-spore-purple text-sm">#traumahealing</span>
-                    <span className="text-spore-pink text-sm">#microdosing</span>
-                  </div>
-                  <p className="text-sm mt-1 text-gray-300">@sporewave</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
