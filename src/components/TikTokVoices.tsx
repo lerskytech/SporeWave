@@ -1,5 +1,75 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../styles/TikTokCarousel.css';
+
+// Styles for TikTok Carousel - embedded to avoid external CSS dependency
+const carouselStyles = `
+  .tiktok-carousel-container {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    touch-action: pan-y;
+  }
+  
+  .glow-border {
+    box-shadow: 
+      0 0 5px #9333ea,
+      0 0 15px #9333ea,
+      0 0 25px #9333ea,
+      inset 0 0 5px #9333ea;
+    border: 2px solid #9333ea;
+    border-radius: 0.5rem;
+    z-index: 1;
+    pointer-events: none;
+    animation: pulse 5s infinite alternate;
+    opacity: 0.8;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 
+        0 0 5px #9333ea,
+        0 0 15px #9333ea;
+      border-color: #9333ea;
+    }
+    50% {
+      box-shadow: 
+        0 0 10px #9333ea,
+        0 0 20px #9333ea,
+        0 0 30px #9333ea;
+      border-color: #a855f7;
+    }
+    100% {
+      box-shadow: 
+        0 0 15px #3b82f6,
+        0 0 25px #3b82f6,
+        0 0 35px #3b82f6;
+      border-color: #3b82f6;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .tiktok-carousel-container {
+      max-height: 80vh;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
+    .aspect-w-9.aspect-h-16 {
+      padding-bottom: 177.78%;
+    }
+  }
+  
+  .tiktok-carousel-container button:hover {
+    transform: scale(1.1) translateY(-50%);
+    box-shadow: 0 0 10px #9333ea;
+  }
+  
+  .tiktok-carousel-container .bg-spore-purple {
+    box-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea;
+  }
+`;
 
 const TikTokVoices: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -62,6 +132,8 @@ const TikTokVoices: React.FC = () => {
   };
   return (
     <section id="tiktok" className="section">
+      {/* Inject carousel styles */}
+      <style dangerouslySetInnerHTML={{ __html: carouselStyles }} />
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
