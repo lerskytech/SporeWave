@@ -1,10 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './TikTokCarousel.css';
+
+// Declare TikTok embed script types
+declare global {
+  interface Window {
+    tiktokEmbedsLoad?: () => void;
+    TiktokEmbed?: {
+      reload: () => void;
+    }
+  }
+}
 
 const TikTokVoices: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const totalSlides = 2;
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % totalSlides);
@@ -14,8 +26,31 @@ const TikTokVoices: React.FC = () => {
     setActiveSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
   
-  // Add keyboard navigation support
+  // Load TikTok embed script and add keyboard navigation support
   useEffect(() => {
+    // Load TikTok embed script
+    if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    // Refresh TikTok embeds when activeSlide changes
+    const refreshTikTokEmbeds = () => {
+      if (window.tiktokEmbedsLoad) {
+        window.tiktokEmbedsLoad();
+      } else if (window.TiktokEmbed) {
+        window.TiktokEmbed.reload();
+      }
+    };
+
+    // Small delay to ensure the DOM has updated
+    const timer = setTimeout(() => {
+      refreshTikTokEmbeds();
+    }, 100);
+
+    // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         prevSlide();
@@ -28,8 +63,9 @@ const TikTokVoices: React.FC = () => {
     
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(timer);
     };
-  }, []);
+  }, [activeSlide]);
   
   // Touch event handlers for mobile swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -62,49 +98,64 @@ const TikTokVoices: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        <div className="relative max-w-xs mx-auto py-2" style={{ touchAction: 'pan-y' }}>
+        <div className="relative mx-auto py-2" style={{ touchAction: 'pan-y', maxWidth: '100%', width: '350px' }}>
           {/* TikTok Carousel */}
           <div 
-            className="relative overflow-hidden mx-auto"
+            ref={containerRef}
+            className="tiktok-carousel-container relative overflow-hidden mx-auto"
             style={{
-              width: '325px',
-              maxWidth: '100%',
+              width: '100%',
               margin: '0 auto',
               boxShadow: '0 0 10px 2px rgba(147, 51, 234, 0.4)',
               borderRadius: '16px',
-              animation: 'subtle-pulse 3s infinite alternate'
+              animation: 'subtle-pulse 3s infinite alternate',
+              height: '650px',
+              position: 'relative'
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* TikTok Video 1 - Using official iframe v2 embed code */}
-            <iframe 
-              src="https://www.tiktok.com/embed/v2/7341913553680987435" 
-              width="325" 
-              height="575" 
-              allow="autoplay; encrypted-media" 
-              allowFullScreen 
-              style={{ 
-                borderRadius: "16px", 
-                border: "none",
-                display: activeSlide === 0 ? 'block' : 'none'
-              }}
-            ></iframe>
+            {/* TikTok Video Slides */}
+            <div className="carousel-slide" style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              opacity: activeSlide === 0 ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out',
+              pointerEvents: activeSlide === 0 ? 'auto' : 'none'
+            }}>
+              <blockquote 
+                className="tiktok-embed" 
+                cite="https://www.tiktok.com/@sporewave/video/7341913553680987435" 
+                data-video-id="7341913553680987435" 
+                style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
+              >
+                <section></section>
+              </blockquote>
+            </div>
             
-            {/* TikTok Video 2 - Using official iframe v2 embed code */}
-            <iframe 
-              src="https://www.tiktok.com/embed/v2/7341915623588111659" 
-              width="325" 
-              height="575" 
-              allow="autoplay; encrypted-media" 
-              allowFullScreen 
-              style={{ 
-                borderRadius: "16px", 
-                border: "none",
-                display: activeSlide === 1 ? 'block' : 'none'
-              }}
-            ></iframe>
+            <div className="carousel-slide" style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              opacity: activeSlide === 1 ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out',
+              pointerEvents: activeSlide === 1 ? 'auto' : 'none'
+            }}>
+              <blockquote 
+                className="tiktok-embed" 
+                cite="https://www.tiktok.com/@sporewave/video/7341915623588111659" 
+                data-video-id="7341915623588111659" 
+                style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
+              >
+                <section></section>
+              </blockquote>
+            </div>
           </div>
           
           {/* Outside navigation buttons */}
@@ -185,6 +236,31 @@ const TikTokVoices: React.FC = () => {
               right: 10px;
               transform: translateY(-50%);
             }
+          }
+          
+          .tiktok-embed {
+            margin: 0 !important;
+            border: none !important;
+            height: 100% !important;
+            width: 100% !important;
+          }
+          
+          /* Force iframe inside TikTok embed to fill the space */
+          .tiktok-embed iframe {
+            height: 100% !important;
+            width: 100% !important;
+            max-height: none !important;
+            max-width: none !important;
+          }
+          
+          /* Hide TikTok watermark/links at bottom */
+          .tiktok-embed section > a {
+            display: none !important;
+          }
+          
+          .tiktok-embed section {
+            height: 100% !important;
+            width: 100% !important;
           }
         `}
       </style>
