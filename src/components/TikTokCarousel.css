@@ -72,3 +72,43 @@
 .tiktok-carousel-container .bg-spore-purple {
   box-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea;
 }
+
+/* Force TikTok embed to fill container */
+.tiktok-embed, 
+.tiktok-embed section,
+.tiktok-embed iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* Remove fixed dimensions from embed container */
+.tiktok-lite-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Hide unnecessary elements from TikTok embed */
+.tiktok-embed .tiktok-embed-background,
+.tiktok-embed .video-feed-item-wrapper footer {
+  display: none !important;
+}
+
+/* Make carousel slide container fill full height */
+.carousel-slide {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
