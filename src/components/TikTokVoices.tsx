@@ -1,15 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './TikTokCarousel.css';
 
-// Declare TikTok embed script types
-declare global {
-  interface Window {
-    tiktokEmbedsLoad?: () => void;
-    TiktokEmbed?: {
-      reload: () => void;
-    }
-  }
-}
+// Using direct iframe embeds instead of TikTok embed script
 
 const TikTokVoices: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -26,59 +18,8 @@ const TikTokVoices: React.FC = () => {
     setActiveSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
   
-  // Load TikTok embed script and add keyboard navigation support
+  // Add keyboard navigation support
   useEffect(() => {
-    // Load TikTok embed script
-    const loadTikTokScript = () => {
-      console.log('Attempting to load TikTok embed script...');
-      if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
-        const script = document.createElement('script');
-        script.src = 'https://www.tiktok.com/embed.js';
-        script.async = true;
-        
-        script.onload = () => {
-          console.log('SUCCESS: TikTok script loaded successfully');
-          console.log('Video 1:', document.querySelector('.carousel-slide:nth-child(1) blockquote')?.getAttribute('cite'));
-          console.log('Video 2:', document.querySelector('.carousel-slide:nth-child(2) blockquote')?.getAttribute('cite'));
-          refreshTikTokEmbeds();
-        };
-        
-        script.onerror = (error) => {
-          console.error('ERROR: Failed to load TikTok embed script:', error);
-        };
-        
-        document.body.appendChild(script);
-      } else {
-        console.log('TikTok script already exists, refreshing embeds...');
-        refreshTikTokEmbeds();
-      }
-    };
-
-    // Refresh TikTok embeds when activeSlide changes
-    const refreshTikTokEmbeds = () => {
-      console.log('Attempting to refresh TikTok embeds...');
-      try {
-        if (window.tiktokEmbedsLoad) {
-          console.log('Using window.tiktokEmbedsLoad method');
-          window.tiktokEmbedsLoad();
-          console.log('TikTok embeds refreshed via tiktokEmbedsLoad');
-        } else if (window.TiktokEmbed) {
-          console.log('Using window.TiktokEmbed.reload method');
-          window.TiktokEmbed.reload();
-          console.log('TikTok embeds refreshed via TiktokEmbed.reload');
-        } else {
-          console.log('TikTok embed methods not available yet, retrying in 1 second...');
-          setTimeout(refreshTikTokEmbeds, 1000);
-        }
-      } catch (error) {
-        console.error('ERROR: Failed to refresh TikTok embeds:', error);
-      }
-    };
-
-    // Small delay to ensure the DOM has updated before loading TikTok script
-    const timer = setTimeout(() => {
-      loadTikTokScript();
-    }, 200);
 
     // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -93,9 +34,8 @@ const TikTokVoices: React.FC = () => {
     
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      clearTimeout(timer);
     };
-  }, [activeSlide]);
+  }, []);
   
   // Touch event handlers for mobile swipe support
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -156,17 +96,17 @@ const TikTokVoices: React.FC = () => {
               pointerEvents: activeSlide === 0 ? 'auto' : 'none',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              borderRadius: '16px',
+              overflow: 'hidden'
             }}>
-              <blockquote 
-                className="tiktok-embed" 
-                cite="https://www.tiktok.com/@entheogeninsight/video/7415355047913000222" 
-                data-video-id="7415355047913000222" 
-                style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
-                data-author="@entheogeninsight"
-                data-embed-type="video"
-              >
-              </blockquote>
+              <iframe
+                title="TikTok Video 1"
+                src="https://www.tiktok.com/embed/v2/7415355047913000222"
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                allowFullScreen
+                allow="encrypted-media;"
+              />
             </div>
             
             <div className="carousel-slide" style={{ 
@@ -178,17 +118,17 @@ const TikTokVoices: React.FC = () => {
               pointerEvents: activeSlide === 1 ? 'auto' : 'none',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              borderRadius: '16px',
+              overflow: 'hidden'
             }}>
-              <blockquote 
-                className="tiktok-embed" 
-                cite="https://www.tiktok.com/@mushroomsok/video/7493371489706626346" 
-                data-video-id="7493371489706626346" 
-                style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
-                data-author="@mushroomsok"
-                data-embed-type="video"
-              >
-              </blockquote>
+              <iframe
+                title="TikTok Video 2"
+                src="https://www.tiktok.com/embed/v2/7493371489706626346"
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                allowFullScreen
+                allow="encrypted-media;"
+              />
             </div>
           </div>
           
