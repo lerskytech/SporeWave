@@ -30,16 +30,26 @@ const TikTokVoices: React.FC = () => {
   useEffect(() => {
     // Load TikTok embed script
     const loadTikTokScript = () => {
+      console.log('Attempting to load TikTok embed script...');
       if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
         const script = document.createElement('script');
         script.src = 'https://www.tiktok.com/embed.js';
         script.async = true;
+        
         script.onload = () => {
-          console.log('TikTok script loaded successfully');
+          console.log('SUCCESS: TikTok script loaded successfully');
+          console.log('Video 1:', document.querySelector('.carousel-slide:nth-child(1) blockquote')?.getAttribute('cite'));
+          console.log('Video 2:', document.querySelector('.carousel-slide:nth-child(2) blockquote')?.getAttribute('cite'));
           refreshTikTokEmbeds();
         };
+        
+        script.onerror = (error) => {
+          console.error('ERROR: Failed to load TikTok embed script:', error);
+        };
+        
         document.body.appendChild(script);
       } else {
+        console.log('TikTok script already exists, refreshing embeds...');
         refreshTikTokEmbeds();
       }
     };
@@ -47,15 +57,21 @@ const TikTokVoices: React.FC = () => {
     // Refresh TikTok embeds when activeSlide changes
     const refreshTikTokEmbeds = () => {
       console.log('Attempting to refresh TikTok embeds...');
-      if (window.tiktokEmbedsLoad) {
-        console.log('Using window.tiktokEmbedsLoad method');
-        window.tiktokEmbedsLoad();
-      } else if (window.TiktokEmbed) {
-        console.log('Using window.TiktokEmbed.reload method');
-        window.TiktokEmbed.reload();
-      } else {
-        console.log('TikTok embed methods not available yet, retrying...');
-        setTimeout(refreshTikTokEmbeds, 500);
+      try {
+        if (window.tiktokEmbedsLoad) {
+          console.log('Using window.tiktokEmbedsLoad method');
+          window.tiktokEmbedsLoad();
+          console.log('TikTok embeds refreshed via tiktokEmbedsLoad');
+        } else if (window.TiktokEmbed) {
+          console.log('Using window.TiktokEmbed.reload method');
+          window.TiktokEmbed.reload();
+          console.log('TikTok embeds refreshed via TiktokEmbed.reload');
+        } else {
+          console.log('TikTok embed methods not available yet, retrying in 1 second...');
+          setTimeout(refreshTikTokEmbeds, 1000);
+        }
+      } catch (error) {
+        console.error('ERROR: Failed to refresh TikTok embeds:', error);
       }
     };
 
