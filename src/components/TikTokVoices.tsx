@@ -109,7 +109,7 @@ const TikTokVoices: React.FC = () => {
               boxShadow: '0 0 10px 2px rgba(147, 51, 234, 0.4)',
               borderRadius: '16px',
               animation: 'subtle-pulse 3s infinite alternate',
-              height: '650px',
+              height: '580px',
               position: 'relative'
             }}
             onTouchStart={handleTouchStart}
@@ -118,42 +118,46 @@ const TikTokVoices: React.FC = () => {
           >
             {/* TikTok Video Slides */}
             <div className="carousel-slide" style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0, 
+              position: 'relative', 
               width: '100%', 
               height: '100%', 
               opacity: activeSlide === 0 ? 1 : 0,
               transition: 'opacity 0.3s ease-in-out',
-              pointerEvents: activeSlide === 0 ? 'auto' : 'none'
+              pointerEvents: activeSlide === 0 ? 'auto' : 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <blockquote 
                 className="tiktok-embed" 
                 cite="https://www.tiktok.com/@sporewave/video/7341913553680987435" 
                 data-video-id="7341913553680987435" 
                 style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
+                data-author="@sporewave"
+                data-embed-type="video"
               >
-                <section></section>
               </blockquote>
             </div>
             
             <div className="carousel-slide" style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0, 
+              position: 'relative', 
               width: '100%', 
               height: '100%', 
               opacity: activeSlide === 1 ? 1 : 0,
               transition: 'opacity 0.3s ease-in-out',
-              pointerEvents: activeSlide === 1 ? 'auto' : 'none'
+              pointerEvents: activeSlide === 1 ? 'auto' : 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               <blockquote 
                 className="tiktok-embed" 
                 cite="https://www.tiktok.com/@sporewave/video/7341915623588111659" 
                 data-video-id="7341915623588111659" 
                 style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
+                data-author="@sporewave"
+                data-embed-type="video"
               >
-                <section></section>
               </blockquote>
             </div>
           </div>
