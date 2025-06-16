@@ -29,26 +29,40 @@ const TikTokVoices: React.FC = () => {
   // Load TikTok embed script and add keyboard navigation support
   useEffect(() => {
     // Load TikTok embed script
-    if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
-      const script = document.createElement('script');
-      script.src = 'https://www.tiktok.com/embed.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-
-    // Refresh TikTok embeds when activeSlide changes
-    const refreshTikTokEmbeds = () => {
-      if (window.tiktokEmbedsLoad) {
-        window.tiktokEmbedsLoad();
-      } else if (window.TiktokEmbed) {
-        window.TiktokEmbed.reload();
+    const loadTikTokScript = () => {
+      if (!document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://www.tiktok.com/embed.js';
+        script.async = true;
+        script.onload = () => {
+          console.log('TikTok script loaded successfully');
+          refreshTikTokEmbeds();
+        };
+        document.body.appendChild(script);
+      } else {
+        refreshTikTokEmbeds();
       }
     };
 
-    // Small delay to ensure the DOM has updated
+    // Refresh TikTok embeds when activeSlide changes
+    const refreshTikTokEmbeds = () => {
+      console.log('Attempting to refresh TikTok embeds...');
+      if (window.tiktokEmbedsLoad) {
+        console.log('Using window.tiktokEmbedsLoad method');
+        window.tiktokEmbedsLoad();
+      } else if (window.TiktokEmbed) {
+        console.log('Using window.TiktokEmbed.reload method');
+        window.TiktokEmbed.reload();
+      } else {
+        console.log('TikTok embed methods not available yet, retrying...');
+        setTimeout(refreshTikTokEmbeds, 500);
+      }
+    };
+
+    // Small delay to ensure the DOM has updated before loading TikTok script
     const timer = setTimeout(() => {
-      refreshTikTokEmbeds();
-    }, 100);
+      loadTikTokScript();
+    }, 200);
 
     // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -130,10 +144,10 @@ const TikTokVoices: React.FC = () => {
             }}>
               <blockquote 
                 className="tiktok-embed" 
-                cite="https://www.tiktok.com/@sporewave/video/7341913553680987435" 
-                data-video-id="7341913553680987435" 
+                cite="https://www.tiktok.com/@entheogeninsight/video/7415355047913000222" 
+                data-video-id="7415355047913000222" 
                 style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
-                data-author="@sporewave"
+                data-author="@entheogeninsight"
                 data-embed-type="video"
               >
               </blockquote>
@@ -152,10 +166,10 @@ const TikTokVoices: React.FC = () => {
             }}>
               <blockquote 
                 className="tiktok-embed" 
-                cite="https://www.tiktok.com/@sporewave/video/7341915623588111659" 
-                data-video-id="7341915623588111659" 
+                cite="https://www.tiktok.com/@mushroomsok/video/7493371489706626346" 
+                data-video-id="7493371489706626346" 
                 style={{ width: '100%', height: '100%', borderRadius: '16px', overflow: 'hidden' }}
-                data-author="@sporewave"
+                data-author="@mushroomsok"
                 data-embed-type="video"
               >
               </blockquote>
