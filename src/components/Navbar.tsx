@@ -8,14 +8,14 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-4">
           {/* Logo */}
-          <div className="flex items-center">
+          <a href="#home" className="flex items-center hover:opacity-80 transition-opacity duration-300">
             <img 
               src="/images/SporeWaveFavicon.png" 
               alt="Minimalist psychedelic mushroom logo glowing with neon circuitry lines, symbolizing SporeWave's fusion of nature, tech, and open-source collaboration." 
               className="h-12 w-12"
             />
             <span className="text-xl font-bold ml-2 text-white">SporeWave</span>
-          </div>
+          </a>
         </div>
 
         {/* Desktop Navigation */}
