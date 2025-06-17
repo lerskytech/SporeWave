@@ -23,21 +23,27 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
       backgroundColor: '#000', // Black background to match TikTok
       padding: 0 // Zero padding to eliminate white space
     }}>
-      {/* Thumbnail image */}
+      {/* Use direct img element instead of background-image */}
       <div style={{
-        backgroundImage: `url(${thumbnailUrl || defaultThumbnail})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
         width: '100%',
         height: '100%',
         borderRadius: '10px',
         position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: '6px',
-        backgroundColor: '#000' // Black background to match TikTok's style
+        overflow: 'hidden',
+        backgroundColor: '#000'
       }}>
+        <img 
+          src={thumbnailUrl || defaultThumbnail} 
+          alt={`TikTok by @${author}`}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        />
         {/* Overlay with gradient */}
         <div style={{
           position: 'absolute',
