@@ -1,10 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
+import './TikTokCarousel.css';
+import './TikTokFix.css'; // Import dedicated fix styles
+import TikTokVideoCard from './TikTokVideoCard';
 
+// Using TikTokVideoCard component with thumbnails and play buttons
 const TikTokVoices: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const totalSlides = 2;
+  const totalSlides = 3; // Updated to 3 slides based on the content below
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % totalSlides);
@@ -16,6 +21,7 @@ const TikTokVoices: React.FC = () => {
   
   // Add keyboard navigation support
   useEffect(() => {
+    // Keyboard navigation
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         prevSlide();
@@ -31,7 +37,7 @@ const TikTokVoices: React.FC = () => {
     };
   }, []);
   
-  // Touch event handlers for mobile swipe support
+  // Touch gesture handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -62,59 +68,53 @@ const TikTokVoices: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        <div className="relative max-w-xs mx-auto py-2" style={{ touchAction: 'pan-y' }}>
+        <div className="relative mx-auto py-2" style={{ touchAction: 'none', maxWidth: '100%', width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
           {/* TikTok Carousel */}
           <div 
-            className="relative overflow-hidden mx-auto"
+            ref={containerRef}
+            className="tiktok-carousel-container relative mx-auto"
             style={{
-              width: '325px',
-              maxWidth: '100%',
+              width: '190px', // Further reduced to eliminate any possible borders
               margin: '0 auto',
               boxShadow: '0 0 10px 2px rgba(147, 51, 234, 0.4)',
               borderRadius: '16px',
-              animation: 'subtle-pulse 3s infinite alternate'
+              animation: 'subtle-pulse 3s infinite alternate',
+              aspectRatio: '9/16', // Standard TikTok aspect ratio
+              position: 'relative', 
+              overflow: 'hidden', // Prevent scrolling within frame
+              touchAction: 'none', // Prevent scrolling but still allow swipe gestures for carousel
+              padding: 0, // Zero padding to eliminate any space for white borders
+              backgroundColor: '#000', // Black background to match TikTok's color scheme
+              border: 'none' // Ensure no borders
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            {/* TikTok Video 1 - Using official iframe v2 embed code */}
-            <iframe 
-              src="https://www.tiktok.com/embed/v2/7341913553680987435" 
-              width="325" 
-              height="575" 
-              allow="autoplay; encrypted-media" 
-              allowFullScreen 
-              style={{ 
-                borderRadius: "16px", 
-                border: "none",
-                display: activeSlide === 0 ? 'block' : 'none'
-              }}
-            ></iframe>
+            {/* TikTok Videos */}
+            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 0 ? 1 : 0, pointerEvents: activeSlide === 0 ? 'auto' : 'none', touchAction: 'none' }}>
+              <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/EMvjf4F.jpg" />
+            </div>
             
-            {/* TikTok Video 2 - Using official iframe v2 embed code */}
-            <iframe 
-              src="https://www.tiktok.com/embed/v2/7341915623588111659" 
-              width="325" 
-              height="575" 
-              allow="autoplay; encrypted-media" 
-              allowFullScreen 
-              style={{ 
-                borderRadius: "16px", 
-                border: "none",
-                display: activeSlide === 1 ? 'block' : 'none'
-              }}
-            ></iframe>
+            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 1 ? 1 : 0, pointerEvents: activeSlide === 1 ? 'auto' : 'none', touchAction: 'none' }}>
+              <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/SLjDThx.jpg" />
+            </div>
+            
+            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 2 ? 1 : 0, pointerEvents: activeSlide === 2 ? 'auto' : 'none', touchAction: 'none' }}>
+              <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/Z2NI97I.jpg" />
+            </div>
           </div>
-          
-          {/* Outside navigation buttons */}
+        </div>
+        
+        {/* Navigation Controls - Positioned closer to the carousel */}
+        <div className="relative w-full mx-auto" style={{ maxWidth: '300px', marginTop: '-30px' }}>
           <button 
             onClick={prevSlide}
-            className="absolute top-1/2 left-0 -translate-x-10 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-purple-600 rounded-full flex items-center justify-center text-white z-10"
+            className="absolute left-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Previous video"
             style={{
               transition: 'all 0.2s ease',
-              boxShadow: activeSlide === 0 ? 'none' : '0 0 8px #9333ea'
+              boxShadow: '0 0 8px #9333ea',
             }}
           >
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,11 +124,11 @@ const TikTokVoices: React.FC = () => {
           
           <button 
             onClick={nextSlide}
-            className="absolute top-1/2 right-0 translate-x-10 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-purple-600 rounded-full flex items-center justify-center text-white z-10"
+            className="absolute right-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Next video"
             style={{
               transition: 'all 0.2s ease',
-              boxShadow: activeSlide === totalSlides - 1 ? 'none' : '0 0 8px #9333ea'
+              boxShadow: '0 0 8px #9333ea',
             }}
           >
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">

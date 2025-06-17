@@ -1,10 +1,17 @@
 .tiktok-carousel-container {
-  position: relative;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  margin: 0 auto;
-  max-width: 100%;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  position: relative !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important; /* Prevents content from spilling out */
+  margin: 0 auto !important;
+  max-width: 195px !important; /* Exact match with inline style */
+  width: 195px !important; /* Force exact width */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  touch-action: none !important; /* Prevents scrolling within frame */
+  -webkit-overflow-scrolling: none !important;
+  overflow-y: hidden !important; /* Explicitly prevents vertical scrolling */
+  overflow-x: hidden !important; /* Explicitly prevents horizontal scrolling */
+  background-color: #000 !important; /* Black background to match TikTok */
+  padding: 0 !important;
 }
 
 .glow-border {
@@ -46,7 +53,37 @@
 
 /* Mobile swipe gestures support */
 .tiktok-carousel-container {
-  touch-action: pan-y;
+  touch-action: none !important; /* Prevent scrolling but allow swipe for carousel */
+}
+
+/* Prevent scrolling in TikTok videos */
+.carousel-slide {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  touch-action: none !important;
+  overflow: hidden !important;
+  pointer-events: none !important; /* Only allow clicks on buttons and links */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+.carousel-slide a, .carousel-slide button, .tiktok-video-card a {
+  pointer-events: auto !important; /* Re-enable pointer events for interactive elements */
+}
+
+/* TikTok video card specific styles */
+.tiktok-video-card {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  touch-action: none !important;
+  border-radius: 0 !important; /* Remove any border radius that might create white space */
+  background-color: #000 !important;
 }
 
 /* Responsive styles */
@@ -71,4 +108,52 @@
 /* Make pagination dots glow when active */
 .tiktok-carousel-container .bg-spore-purple {
   box-shadow: 0 0 5px #9333ea, 0 0 10px #9333ea;
+}
+
+/* Force TikTok embed to fit container without cutoff */
+.tiktok-embed {
+  width: 100% !important;
+  height: auto !important; /* Allow height to adjust naturally */
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  position: static !important; /* Changed from absolute to static */
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+/* Style the iframe inside TikTok embed */
+.tiktok-embed iframe {
+  width: 100% !important;
+  border: none !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+/* Remove fixed dimensions from embed container */
+.tiktok-lite-iframe {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Hide unnecessary elements from TikTok embed */
+.tiktok-embed .tiktok-embed-background,
+.tiktok-embed .video-feed-item-wrapper footer {
+  display: none !important;
+}
+
+/* Make carousel slide container fill full height */
+.carousel-slide {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  position: absolute !important;
+  width: 100% !important;
+  left: 0;
+  top: 0;
 }

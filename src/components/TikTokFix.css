@@ -1,0 +1,37 @@
+/* TikTok video display fix */
+.tiktok-carousel-container {
+  width: 195px !important;
+  max-width: 195px !important;
+  background-color: #000 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  touch-action: none !important;
+  position: relative !important;
+  aspect-ratio: 9/16 !important;
+}
+
+.carousel-slide {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  touch-action: none !important;
+  background-color: #000 !important;
+  padding: 0 !important;
+}
+
+.tiktok-video-card {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  touch-action: none !important;
+  padding: 0 !important;
+  background-color: #000 !important;
+}
