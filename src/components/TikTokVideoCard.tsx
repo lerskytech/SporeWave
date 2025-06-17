@@ -8,28 +8,36 @@ interface TikTokVideoCardProps {
 
 const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thumbnailUrl }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const defaultThumbnail = "https://i.imgur.com/0BKjgKP.jpg";
-  const tiktokUrl = `https://www.tiktok.com/@${author}/video/${videoId}`;
   const embedUrl = `https://www.tiktok.com/embed/v2/${videoId}`;
 
-  // Handle iframe loading
+  // Handle iframe loading and autoplay when play is clicked
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
 
     const handleLoad = () => {
-      // Give it a small delay to ensure the iframe content is fully loaded
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 500);
+      // Signal that iframe has loaded
+      setIsLoaded(true);
     };
 
     iframe.addEventListener('load', handleLoad);
+    
     return () => {
       iframe?.removeEventListener('load', handleLoad);
     };
   }, []);
+  
+  // Handle video playback
+  useEffect(() => {
+    if (isPlaying && iframeRef.current) {
+      // Focus the iframe to allow interactions
+      iframeRef.current.focus();
+      // The browser will now allow autoplay since it's user-initiated
+    }
+  }, [isPlaying]);
 
   return (
     <div 
@@ -61,7 +69,7 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
         title={`TikTok video by @${author}`}
       />
       
-      {/* Loading overlay */}
+      {/* Loading/thumbnail overlay - hidden when playing */}
       <div 
         style={{
           position: 'absolute',
@@ -75,8 +83,8 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
           justifyContent: 'center',
           alignItems: 'center',
           transition: 'opacity 0.5s ease, visibility 0.5s ease',
-          opacity: isLoaded ? 0 : 1,
-          visibility: isLoaded ? 'hidden' : 'visible',
+          opacity: isPlaying ? 0 : 1, 
+          visibility: isPlaying ? 'hidden' : 'visible',
           zIndex: 2
         }}
       >
@@ -110,7 +118,7 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
           <span style={{ marginLeft: '8px', color: 'white', fontWeight: 'bold', fontSize: '14px' }}>@{author}</span>
         </div>
 
-        {/* Play button and text */}
+        {/* Play button */}
         <div style={{ 
           position: 'relative',
           display: 'flex',
@@ -118,10 +126,8 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
           alignItems: 'center',
           zIndex: 3
         }}>
-          <a 
-            href={tiktokUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button 
+            onClick={() => setIsPlaying(true)}
             style={{
               width: '70px',
               height: '70px',
@@ -137,11 +143,12 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
               boxShadow: '0 0 15px rgba(147, 51, 234, 0.7)'
             }}
             className="hover:scale-110 hover:bg-purple-600/30"
+            aria-label="Play video"
           >
             <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
               <path d="M8 5v14l11-7z"/>
             </svg>
-          </a>
+          </button>
           
           <p style={{ 
             color: 'white', 
@@ -150,7 +157,7 @@ const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thum
             textShadow: '0 2px 4px rgba(0,0,0,0.5)',
             fontSize: '14px'
           }}>
-            Watch on TikTok
+            Play Video
           </p>
         </div>
       </div>
