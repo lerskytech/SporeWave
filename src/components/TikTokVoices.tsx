@@ -113,7 +113,7 @@ const TikTokVoices: React.FC = () => {
             className="absolute left-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Previous video"
             style={{
-              top: '-125px', // Position vertically centered relative to carousel height
+              top: '-190px', // Position at the vertical center (approximately half of carousel height)
               left: '-20px',
               zIndex: 50,
               transition: 'all 0.2s ease',
@@ -130,7 +130,7 @@ const TikTokVoices: React.FC = () => {
             className="absolute right-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Next video"
             style={{
-              top: '-125px', // Position vertically centered relative to carousel height
+              top: '-190px', // Position at the vertical center (approximately half of carousel height)
               right: '-20px',
               zIndex: 50,
               transition: 'all 0.2s ease',
