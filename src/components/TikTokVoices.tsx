@@ -5,8 +5,8 @@ import TikTokVideoCard from './TikTokVideoCard';
 
 // Using TikTokVideoCard component with thumbnails and play buttons
 const TikTokVoices: React.FC = () => {
-  const [activeSlide, setActiveSlide] = useState(0); // Controls which video is currently visible
-  const totalSlides = 5; // Updated to 5 slides including the two new videos
+  const [activeSlide, setActiveSlide] = useState(0);
+  const totalSlides = 5; // We have 5 TikTok videos
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -68,95 +68,108 @@ const TikTokVoices: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        {/* Main container with navigation buttons */}
-        <div className="relative mx-auto" style={{ maxWidth: '400px', margin: '0 auto', position: 'relative' }}>
-          {/* Navigation Controls - Positioned OUTSIDE the carousel */}
+        {/* A cleaner approach with better positioning */}
+        <div className="relative mx-auto" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', paddingLeft: '40px', paddingRight: '40px' }}>
+          {/* Navigation buttons - positioned far away from container */}
           <button 
-            onClick={() => prevSlide()}
-            className="absolute w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
+            onClick={prevSlide}
+            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Previous video"
             style={{
               top: '50%',
-              left: '0',
+              left: '-40px',
               transform: 'translateY(-50%)',
               zIndex: 50,
               transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px #9333ea',
+              boxShadow: '0 0 8px rgba(147, 51, 234, 0.7)',
             }}
           >
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path>
             </svg>
           </button>
           
           <button 
-            onClick={() => nextSlide()}
-            className="absolute w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
+            onClick={nextSlide}
+            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Next video"
             style={{
               top: '50%',
-              right: '0',
+              right: '-40px',
               transform: 'translateY(-50%)',
               zIndex: 50,
               transition: 'all 0.2s ease',
-              boxShadow: '0 0 8px #9333ea',
+              boxShadow: '0 0 8px rgba(147, 51, 234, 0.7)',
             }}
           >
-            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path>
             </svg>
           </button>
 
           {/* TikTok Carousel */}
-          <div className="mx-auto py-2" style={{ touchAction: 'none', width: '100%', display: 'flex', justifyContent: 'center', overflow: 'hidden' }}>
+          <div className="mx-auto" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div 
               ref={containerRef}
               className="tiktok-carousel-container relative mx-auto"
               style={{
-                width: '220px', // Slightly wider for better display
+                width: '280px',
+                height: '500px',
                 margin: '0 auto',
-                boxShadow: '0 0 10px 2px rgba(147, 51, 234, 0.4)',
+                boxShadow: '0 0 15px 3px rgba(147, 51, 234, 0.4)',
                 borderRadius: '16px',
                 animation: 'subtle-pulse 3s infinite alternate',
-                aspectRatio: '9/16', // Standard TikTok aspect ratio
                 position: 'relative', 
-                overflow: 'hidden', // Prevent scrolling within frame
-                touchAction: 'none', // Prevent scrolling but still allow swipe gestures for carousel
-                padding: 0, // Zero padding to eliminate any space for white borders
-                backgroundColor: '#000', // Black background to match TikTok's color scheme
-                border: 'none', // Ensure no borders
-                zIndex: 1 // Ensure proper stacking context
+                overflow: 'hidden',
+                backgroundColor: '#000',
+                border: 'none',
               }}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-            {/* TikTok Videos */}
-            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 0 ? 1 : 0, visibility: activeSlide === 0 ? 'visible' : 'hidden', pointerEvents: activeSlide === 0 ? 'auto' : 'none', touchAction: 'none', zIndex: activeSlide === 0 ? 5 : 0 }}>
-              <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/EMvjf4F.jpg" />
-            </div>
-            
-            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 1 ? 1 : 0, visibility: activeSlide === 1 ? 'visible' : 'hidden', pointerEvents: activeSlide === 1 ? 'auto' : 'none', touchAction: 'none', zIndex: activeSlide === 1 ? 5 : 0 }}>
-              <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/SLjDThx.jpg" />
-            </div>
-            
-            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 2 ? 1 : 0, visibility: activeSlide === 2 ? 'visible' : 'hidden', pointerEvents: activeSlide === 2 ? 'auto' : 'none', touchAction: 'none', zIndex: activeSlide === 2 ? 5 : 0 }}>
-              <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/Z2NI97I.jpg" />
-            </div>
-            
-            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 3 ? 1 : 0, visibility: activeSlide === 3 ? 'visible' : 'hidden', pointerEvents: activeSlide === 3 ? 'auto' : 'none', touchAction: 'none', zIndex: activeSlide === 3 ? 5 : 0 }}>
-              <TikTokVideoCard videoId="7346732457308069166" author="sporewave" thumbnailUrl="https://i.imgur.com/U3BTnFE.jpg" />
-            </div>
-            
-            <div className="carousel-slide" style={{ position: 'absolute', width: '100%', height: '100%', opacity: activeSlide === 4 ? 1 : 0, visibility: activeSlide === 4 ? 'visible' : 'hidden', pointerEvents: activeSlide === 4 ? 'auto' : 'none', touchAction: 'none', zIndex: activeSlide === 4 ? 5 : 0 }}>
-              <TikTokVideoCard videoId="7347959263780943659" author="sporewave" thumbnailUrl="https://i.imgur.com/X6MBgcH.jpg" />
-            </div>
+              {/* Video 1 */}
+              {activeSlide === 0 && (
+                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
+                  <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/EMvjf4F.jpg" />
+                </div>
+              )}
+              
+              {/* Video 2 */}
+              {activeSlide === 1 && (
+                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
+                  <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/SLjDThx.jpg" />
+                </div>
+              )}
+              
+              {/* Video 3 */}
+              {activeSlide === 2 && (
+                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
+                  <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/Z2NI97I.jpg" />
+                </div>
+              )}
+              
+              {/* Video 4 */}
+              {activeSlide === 3 && (
+                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
+                  <TikTokVideoCard videoId="7346732457308069166" author="sporewave" thumbnailUrl="https://i.imgur.com/U3BTnFE.jpg" />
+                </div>
+              )}
+              
+              {/* Video 5 */}
+              {activeSlide === 4 && (
+                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
+                  <TikTokVideoCard videoId="7347959263780943659" author="sporewave" thumbnailUrl="https://i.imgur.com/X6MBgcH.jpg" />
+                </div>
+              )}
             </div>
           </div>
         </div>
         
-        {/* Pagination dots */}
-        <div className="flex justify-center mt-4 gap-2">
+        {/* Video counter and pagination dots */}
+        <div className="flex justify-center items-center mt-6 mb-2">
+          <div className="text-sm text-gray-400 mr-4">{activeSlide + 1} / {totalSlides}</div>
+          <div className="flex gap-2">
           {Array.from({ length: totalSlides }).map((_, index) => (
             <button
               key={index}
@@ -170,6 +183,7 @@ const TikTokVoices: React.FC = () => {
               aria-label={`Go to video ${index + 1}`}
             />
           ))}
+          </div>
         </div>
         
         <div className="text-center mt-8">
