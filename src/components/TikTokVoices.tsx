@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './TikTokCarousel.css';
-import './TikTokFix.css'; // Import dedicated fix styles
+import '../styles/TikTokFix.css'; // Import dedicated fix styles
 import TikTokVideoCard from './TikTokVideoCard';
 
 // Using TikTokVideoCard component with thumbnails and play buttons
@@ -37,25 +37,36 @@ const TikTokVoices: React.FC = () => {
     };
   }, []);
   
-  // Touch gesture handlers
+  // Touch gesture handlers with improved mobile scrolling support
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Store initial touch position
     touchStartX.current = e.touches[0].clientX;
   };
   
   const handleTouchMove = (e: React.TouchEvent) => {
+    // Update current touch position
     touchEndX.current = e.touches[0].clientX;
+    
+    // Don't prevent default scrolling behavior
+    // This allows the page to scroll normally when swiping vertically
   };
   
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     const touchDiff = touchStartX.current - touchEndX.current;
     
     // Minimum swipe distance required (in pixels)
     const minSwipeDistance = 50;
     
-    if (touchDiff > minSwipeDistance) {
-      nextSlide();
-    } else if (touchDiff < -minSwipeDistance) {
-      prevSlide();
+    // Only handle horizontal swipes
+    if (Math.abs(touchDiff) > minSwipeDistance) {
+      // Prevent click events after swipe
+      e.preventDefault();
+      
+      if (touchDiff > minSwipeDistance) {
+        nextSlide();
+      } else if (touchDiff < -minSwipeDistance) {
+        prevSlide();
+      }
     }
     
     // Reset touch positions
@@ -68,16 +79,22 @@ const TikTokVoices: React.FC = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-spore-purple to-spore-blue">TikTok Voices</h2>
         
-        {/* A cleaner approach with better positioning */}
-        <div className="relative mx-auto" style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', paddingLeft: '40px', paddingRight: '40px' }}>
-          {/* Navigation buttons - positioned far away from container */}
+        {/* Responsive container with improved spacing for navigation */}
+        <div className="relative mx-auto" style={{ 
+          maxWidth: '350px', 
+          margin: '0 auto', 
+          position: 'relative', 
+          paddingLeft: '50px', 
+          paddingRight: '50px' 
+        }}>
+          {/* Navigation buttons - positioned farther outside to avoid video interference */}
           <button 
             onClick={prevSlide}
-            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
+            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white nav-button left"
             aria-label="Previous video"
             style={{
               top: '50%',
-              left: '-40px',
+              left: '-30px',
               transform: 'translateY(-50%)',
               zIndex: 50,
               transition: 'all 0.2s ease',
@@ -91,11 +108,11 @@ const TikTokVoices: React.FC = () => {
           
           <button 
             onClick={nextSlide}
-            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
+            className="absolute w-12 h-12 bg-black/80 hover:bg-purple-600 rounded-full flex items-center justify-center text-white nav-button right"
             aria-label="Next video"
             style={{
               top: '50%',
-              right: '-40px',
+              right: '-30px',
               transform: 'translateY(-50%)',
               zIndex: 50,
               transition: 'all 0.2s ease',
@@ -107,7 +124,7 @@ const TikTokVoices: React.FC = () => {
             </svg>
           </button>
 
-          {/* TikTok Carousel */}
+          {/* TikTok Carousel with improved video content display */}
           <div className="mx-auto" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div 
               ref={containerRef}
@@ -123,6 +140,10 @@ const TikTokVoices: React.FC = () => {
                 overflow: 'hidden',
                 backgroundColor: '#000',
                 border: 'none',
+                touchAction: 'pan-y', /* Enable vertical scrolling on mobile */
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -131,45 +152,43 @@ const TikTokVoices: React.FC = () => {
               {/* Video 1 */}
               {activeSlide === 0 && (
                 <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/EMvjf4F.jpg" />
+                  <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" />
                 </div>
               )}
               
               {/* Video 2 */}
               {activeSlide === 1 && (
                 <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/SLjDThx.jpg" />
+                  <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" />
                 </div>
               )}
               
               {/* Video 3 */}
               {activeSlide === 2 && (
                 <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" thumbnailUrl="https://i.imgur.com/Z2NI97I.jpg" />
+                  <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" />
                 </div>
               )}
               
               {/* Video 4 */}
               {activeSlide === 3 && (
                 <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7346732457308069166" author="sporewave" thumbnailUrl="https://i.imgur.com/U3BTnFE.jpg" />
+                  <TikTokVideoCard videoId="7346732457308069166" author="sporewave" />
                 </div>
               )}
               
               {/* Video 5 */}
               {activeSlide === 4 && (
                 <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7347959263780943659" author="sporewave" thumbnailUrl="https://i.imgur.com/X6MBgcH.jpg" />
+                  <TikTokVideoCard videoId="7347959263780943659" author="sporewave" />
                 </div>
               )}
             </div>
           </div>
         </div>
         
-        {/* Video counter and pagination dots */}
-        <div className="flex justify-center items-center mt-6 mb-2">
-          <div className="text-sm text-gray-400 mr-4">{activeSlide + 1} / {totalSlides}</div>
-          <div className="flex gap-2">
+        {/* Pagination dots */}
+        <div className="flex justify-center mt-4 gap-2">
           {Array.from({ length: totalSlides }).map((_, index) => (
             <button
               key={index}
@@ -183,7 +202,6 @@ const TikTokVoices: React.FC = () => {
               aria-label={`Go to video ${index + 1}`}
             />
           ))}
-          </div>
         </div>
         
         <div className="text-center mt-8">
@@ -208,14 +226,25 @@ const TikTokVoices: React.FC = () => {
             100% { box-shadow: 0 0 12px 3px rgba(59, 130, 246, 0.5); }
           }
 
+          /* Enhanced mobile styling for navigation */
           @media (max-width: 640px) {
-            button.absolute.left-0 {
-              left: 10px;
+            .nav-button.left {
+              left: -5px;
               transform: translateY(-50%);
+              width: 10vw;
+              max-width: 40px;
+              min-width: 32px;
             }
-            button.absolute.right-0 {
-              right: 10px;
+            .nav-button.right {
+              right: -5px;
               transform: translateY(-50%);
+              width: 10vw;
+              max-width: 40px;
+              min-width: 32px;
+            }
+            /* Improved mobile touch area */
+            .tiktok-carousel-container {
+              touch-action: pan-y; /* Enable vertical scrolling */
             }
           }
         `}

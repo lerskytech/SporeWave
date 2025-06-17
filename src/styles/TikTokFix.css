@@ -1,0 +1,59 @@
+/* TikTokFix.css - Styling fixes for TikTok video carousel */
+
+/* Remove any text overlays from embedded TikTok videos */
+.tiktok-video-container iframe {
+  border: none !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hide TikTok embed logo and other unnecessary elements */
+.tiktok-video-container iframe > div.tiktok-embed {
+  max-height: 100% !important;
+}
+
+/* Prevent redirects by capturing clicks */
+.tiktok-carousel-container {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Fix video aspect ratio and positioning */
+.carousel-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* Ensure navigation arrows are clearly visible */
+.nav-button {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-button:hover {
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+/* Improve pagination dots visibility */
+.pagination-dot {
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination-dot.active {
+  transform: scale(1.2);
+}
+
+/* Handle touch interactions - prevent scroll conflicts */
+@media (max-width: 768px) {
+  .tiktok-carousel-container {
+    touch-action: pan-y;
+  }
+  
+  /* Make navigation buttons larger on mobile for easier tapping */
+  .nav-button {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
