@@ -106,13 +106,14 @@ const TikTokVoices: React.FC = () => {
           </div>
         </div>
         
-        {/* Navigation Controls - Positioned closer to the carousel */}
-        <div className="relative w-full mx-auto" style={{ maxWidth: '300px', marginTop: '-30px' }}>
+        {/* Navigation Controls - Positioned at the vertical center of the carousel */}
+        <div className="relative" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '240px', height: '0', zIndex: 50 }}>
           <button 
             onClick={prevSlide}
             className="absolute left-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Previous video"
             style={{
+              transform: 'translateX(-150%)',
               transition: 'all 0.2s ease',
               boxShadow: '0 0 8px #9333ea',
             }}
@@ -127,6 +128,7 @@ const TikTokVoices: React.FC = () => {
             className="absolute right-0 w-10 h-10 bg-black/70 hover:bg-purple-600 rounded-full flex items-center justify-center text-white"
             aria-label="Next video"
             style={{
+              transform: 'translateX(150%)',
               transition: 'all 0.2s ease',
               boxShadow: '0 0 8px #9333ea',
             }}
