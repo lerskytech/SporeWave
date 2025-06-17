@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 interface TikTokVideoCardProps {
   videoId: string;
@@ -8,52 +8,75 @@ interface TikTokVideoCardProps {
 
 const TikTokVideoCard: React.FC<TikTokVideoCardProps> = ({ videoId, author, thumbnailUrl }) => {
   const defaultThumbnail = `https://i.imgur.com/0BKjgKP.jpg`; // Placeholder image
-  const tiktokUrl = `https://www.tiktok.com/@${author}/video/${videoId}`;
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const blockquoteId = `tiktok-${videoId}`;
   
-  // Load TikTok embed script
   useEffect(() => {
     // Create a script element for the TikTok embed script
-    const script = document.createElement('script');
-    script.src = 'https://www.tiktok.com/embed.js';
-    script.async = true;
-    
-    // Add the script to the document
-    document.body.appendChild(script);
-    
-    // Clean up
-    return () => {
-      document.body.removeChild(script);
+    const loadTikTokScript = () => {
+      // Remove any existing script first
+      const existingScript = document.getElementById('tiktok-embed-script');
+      if (existingScript) {
+        existingScript.remove();
+      }
+      
+      // Create new script
+      const script = document.createElement('script');
+      script.id = 'tiktok-embed-script';
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      
+      // Add the script to the document
+      document.body.appendChild(script);
     };
-  }, []);
+    
+    // Short timeout to ensure the blockquote is in the DOM first
+    setTimeout(loadTikTokScript, 300);
+    
+    // Cleanup function
+    return () => {
+      const script = document.getElementById('tiktok-embed-script');
+      if (script) {
+        script.remove();
+      }
+    };
+  }, [videoId]); // Re-run when videoId changes
   
   return (
-    <div className="tiktok-video-card" style={{
-      width: '100%',
-      height: '100%',
-      borderRadius: '12px',
-      overflow: 'hidden',
-      position: 'relative',
-      boxShadow: 'none',
-      touchAction: 'none',
-      maxWidth: '100%',
-      backgroundColor: '#000',
-      padding: 0
-    }}>
-      {/* TikTok iframe embed */}
-      <iframe 
-        ref={iframeRef}
-        src={`https://www.tiktok.com/embed/v2/${videoId}`}
+    <div 
+      className="tiktok-video-container" 
+      style={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: '#000',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 0,
+        margin: 0,
+        borderRadius: '8px'
+      }}
+    >
+      <blockquote 
+        className="tiktok-embed" 
+        cite={`https://www.tiktok.com/@${author}/video/${videoId}`}
+        data-video-id={videoId} 
         style={{
           width: '100%',
+          minWidth: '325px', // TikTok's minimum width
           height: '100%',
+          margin: '0 auto',
+          padding: 0,
           border: 'none',
-          display: 'block',
-          backgroundColor: '#000'
+          backgroundColor: 'black',
         }}
-        allowFullScreen 
-        allow="encrypted-media; picture-in-picture"
-      ></iframe>
+        id={blockquoteId}
+      >
+        <section>
+          <a target="_blank" href={`https://www.tiktok.com/@${author}/video/${videoId}`}></a>
+        </section>
+      </blockquote>
     </div>
   );
 };

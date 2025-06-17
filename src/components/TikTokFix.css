@@ -1,7 +1,7 @@
 /* TikTok video display fix */
 .tiktok-carousel-container {
-  width: 195px !important;
-  max-width: 195px !important;
+  width: 325px !important;
+  max-width: 325px !important;
   background-color: #000 !important;
   border-radius: 16px !important;
   overflow: hidden !important;
@@ -10,6 +10,7 @@
   touch-action: none !important;
   position: relative !important;
   aspect-ratio: 9/16 !important;
+  height: 580px !important; /* Fixed height for proper sizing */
 }
 
 .carousel-slide {
@@ -27,11 +28,27 @@
   padding: 0 !important;
 }
 
-.tiktok-video-card {
+.tiktok-video-container {
   width: 100% !important;
   height: 100% !important;
   overflow: hidden !important;
   touch-action: none !important;
   padding: 0 !important;
   background-color: #000 !important;
+}
+
+/* Override TikTok's default embed styling */
+.tiktok-embed {
+  max-width: none !important;
+  margin: 0 auto !important;
+  min-width: 325px !important;
+  width: 100% !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+/* Hide unnecessary TikTok embed elements */
+.tiktok-embed:before,
+.tiktok-embed:after {
+  display: none !important;
 }
