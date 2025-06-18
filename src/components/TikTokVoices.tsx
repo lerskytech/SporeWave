@@ -150,9 +150,9 @@ const TikTokVoices: React.FC = () => {
               ref={containerRef}
               className="tiktok-carousel-container relative mx-auto"
               style={{
-                width: '360px', // Further increased width for better fit
-                maxWidth: '90vw', // Responsive width for mobile
-                height: '560px', // Adjusted height for new proportions
+                width: '500px', // Dramatically increased width for optimal viewing
+                maxWidth: '95vw', // Responsive width for mobile
+                height: '700px', // Proportionally increased height
                 margin: '0 auto',
                 boxShadow: '0 0 15px 3px rgba(147, 51, 234, 0.4)',
                 borderRadius: '16px',
