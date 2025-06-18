@@ -31,17 +31,17 @@ interface Tweet {
 const TwitterFeed: React.FC = () => {
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [activeHashtag, setActiveHashtag] = useState<string>('mindfulness');
+  const [activeHashtag, setActiveHashtag] = useState<string>('psilocybinresearch');
   
-  // Relevant hashtags for our content
+  // Relevant hashtags focused on scientific/educational psilocybin content
   const hashtags = [
-    'mindfulness',
-    'meditation',
-    'consciousness',
-    'wellness',
-    'spirituality',
-    'mentalhealth',
-    'awareness'
+    'psilocybinresearch',
+    'neuroplasticity',
+    'psychedelicmedicine',
+    'mycology',
+    'psychedelicscience',
+    'therapeuticpotential',
+    'mentalhealthresearch'
   ];
 
   // Minimum follower threshold
@@ -51,88 +51,88 @@ const TwitterFeed: React.FC = () => {
   const sampleTweets: Tweet[] = [
     {
       id: '1',
-      text: 'The practice of #mindfulness allows us to be present with our experiences without judgment. This opens the door to greater compassion and understanding.',
+      text: 'Our latest peer-reviewed study on #psilocybinresearch shows significant potential for treating treatment-resistant depression. The data reveals sustained therapeutic effects at 6-month follow-up. #psychedelicmedicine #mentalhealthresearch',
       author: {
-        name: 'Mindful Living',
-        username: 'mindful_living',
-        profileImageUrl: 'https://randomuser.me/api/portraits/women/22.jpg',
-        followersCount: 28500
+        name: 'Psychedelic Research Institute',
+        username: 'psych_research',
+        profileImageUrl: 'https://randomuser.me/api/portraits/men/42.jpg',
+        followersCount: 58700
       },
       createdAt: '2025-06-16T18:30:00Z',
       metrics: {
-        likes: 342,
-        retweets: 87,
-        replies: 12
+        likes: 1342,
+        retweets: 587,
+        replies: 76
       },
-      hashtags: ['mindfulness', 'meditation', 'wellness']
+      hashtags: ['psilocybinresearch', 'psychedelicmedicine', 'mentalhealthresearch']
     },
     {
       id: '2',
-      text: 'Your #consciousness is the foundation of everything you experience. Expanding it is the most profound journey you can undertake. #awareness #spirituality',
+      text: 'New findings: Single administration of psilocybin increases #neuroplasticity in the prefrontal cortex for up to 48 hours post-session. This mechanism may explain the rapid antidepressant effects observed clinically. #psychedelicscience #neuroscience',
       author: {
-        name: 'Consciousness Today',
-        username: 'consciousness_now',
-        profileImageUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
-        followersCount: 12700
+        name: 'Neuroplasticity Lab',
+        username: 'neuro_plasticity',
+        profileImageUrl: 'https://randomuser.me/api/portraits/women/32.jpg',
+        followersCount: 42500
       },
       createdAt: '2025-06-17T09:15:00Z',
       metrics: {
-        likes: 521,
-        retweets: 134,
-        replies: 29
+        likes: 921,
+        retweets: 334,
+        replies: 49
       },
-      hashtags: ['consciousness', 'awareness', 'spirituality']
+      hashtags: ['neuroplasticity', 'psychedelicscience', 'neuroscience']
     },
     {
       id: '3',
-      text: 'Recent research shows that just 10 minutes of #meditation daily can significantly reduce anxiety levels and improve focus. Start small, stay consistent. #mentalhealth',
+      text: 'Mycological update: Recent advances in cultivation techniques are allowing researchers to produce consistent, pharmaceutical-grade psilocybin compounds for clinical trials. This standardization is crucial for medicine development. #mycology #therapeuticpotential',
       author: {
-        name: 'Meditation Science',
-        username: 'med_science',
-        profileImageUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
+        name: 'Mycology Research',
+        username: 'mycology_science',
+        profileImageUrl: 'https://randomuser.me/api/portraits/men/28.jpg',
         followersCount: 35900
       },
       createdAt: '2025-06-17T14:45:00Z',
       metrics: {
-        likes: 893,
-        retweets: 312,
-        replies: 54
+        likes: 693,
+        retweets: 212,
+        replies: 34
       },
-      hashtags: ['meditation', 'mentalhealth', 'wellness']
+      hashtags: ['mycology', 'therapeuticpotential', 'psilocybinresearch']
     },
     {
       id: '4',
-      text: 'The path to #wellness isn\'t always linear. Embrace the journey with compassion for yourself. #mindfulness #selfcare',
+      text: 'Educational seminar: "The Science of Psychedelics in Therapy" - Join us to learn about the latest research protocols, safety guidelines, and therapeutic frameworks being used in clinical settings. #psychedelicmedicine #mentalhealthresearch',
       author: {
-        name: 'Wellness Journey',
-        username: 'wellness_path',
+        name: 'Therapeutic Applications Lab',
+        username: 'therapeutic_apps',
         profileImageUrl: 'https://randomuser.me/api/portraits/women/45.jpg',
-        followersCount: 9200
+        followersCount: 29200
       },
       createdAt: '2025-06-17T16:20:00Z',
       metrics: {
-        likes: 267,
-        retweets: 76,
-        replies: 18
+        likes: 567,
+        retweets: 176,
+        replies: 38
       },
-      hashtags: ['wellness', 'mindfulness', 'selfcare']
+      hashtags: ['psychedelicmedicine', 'mentalhealthresearch', 'therapeuticpotential']
     },
     {
       id: '5',
-      text: 'Expanding your #consciousness isn\'t just about spiritual growth—it\'s about seeing the world with fresh eyes and an open heart. #spirituality #awareness',
+      text: 'Important distinction: When discussing #psychedelicscience, we must separate clinical applications from recreational use. Our focus remains on developing evidence-based therapeutic protocols within regulated frameworks. #psilocybinresearch',
       author: {
-        name: 'Spiritual Growth',
-        username: 'spirit_expand',
+        name: 'Clinical Psychedelics',
+        username: 'clinical_psychs',
         profileImageUrl: 'https://randomuser.me/api/portraits/men/67.jpg',
-        followersCount: 18300
+        followersCount: 48300
       },
       createdAt: '2025-06-17T17:50:00Z',
       metrics: {
-        likes: 412,
-        retweets: 109,
-        replies: 27
+        likes: 812,
+        retweets: 309,
+        replies: 57
       },
-      hashtags: ['consciousness', 'spirituality', 'awareness']
+      hashtags: ['psychedelicscience', 'psilocybinresearch', 'mentalhealthresearch']
     }
   ];
 
@@ -196,7 +196,7 @@ const TwitterFeed: React.FC = () => {
 
   return (
     <div className="twitter-feed-wrapper">
-      <h2 className="feed-title">Community Insights</h2>
+      <h2 className="feed-title">Psilocybin Research Insights</h2>
       
       {/* Hashtag filter buttons */}
       <div className="hashtag-filters">
@@ -261,14 +261,14 @@ const TwitterFeed: React.FC = () => {
       </div>
       
       <div className="twitter-footer">
-        <p className="twitter-note">Showing tweets from accounts with 5,000+ followers</p>
+        <p className="twitter-note">Showing scientific insights from researchers with 5,000+ followers</p>
         <a 
           href={`https://twitter.com/search?q=%23${activeHashtag}`} 
           target="_blank" 
           rel="noopener noreferrer"
           className="view-more-link"
         >
-          View more on Twitter
+          View more research on Twitter
         </a>
       </div>
     </div>
