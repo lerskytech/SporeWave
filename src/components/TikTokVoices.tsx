@@ -3,13 +3,33 @@ import './TikTokCarousel.css';
 import '../styles/TikTokFix.css'; // Import dedicated fix styles
 import TikTokVideoCard from './TikTokVideoCard';
 
-// Using TikTokVideoCard component with thumbnails and play buttons
+/**
+ * TikTokVoices - Professional carousel implementation for TikTok videos
+ * 
+ * Features:
+ * - Reliable video loading on all devices
+ * - Touch-friendly navigation with swipe gestures
+ * - Keyboard navigation support
+ * - Responsive layout and controls
+ * - Pagination dots for position indication
+ */
 const TikTokVoices: React.FC = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const totalSlides = 5; // We have 5 TikTok videos
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Define all videos centrally for easier management
+  const videos = [
+    { videoId: "7415355047913000222", author: "entheogeninsight" },
+    { videoId: "7216268901723951407", author: "entheogeninsight" },
+    { videoId: "7215189553415145771", author: "entheogeninsight" },
+    { videoId: "7346732457308069166", author: "sporewave" },
+    { videoId: "7347959263780943659", author: "sporewave" }
+  ];
+  
+  const totalSlides = videos.length;
   
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % totalSlides);
@@ -21,7 +41,18 @@ const TikTokVoices: React.FC = () => {
   
   // Add keyboard navigation support
   useEffect(() => {
-    // Keyboard navigation
+    // Handle loading state
+    setIsLoading(true);
+    
+    // Clear loading after a short delay to allow iframe to initialize
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, [activeSlide]);
+  
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         prevSlide();
@@ -29,49 +60,38 @@ const TikTokVoices: React.FC = () => {
         nextSlide();
       }
     };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    
+
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-  
-  // Touch gesture handlers with improved mobile scrolling support
+
+  // Touch event handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Store initial touch position
-    touchStartX.current = e.touches[0].clientX;
+    setTouchStartX(e.touches[0].clientX);
   };
   
   const handleTouchMove = (e: React.TouchEvent) => {
-    // Update current touch position
-    touchEndX.current = e.touches[0].clientX;
-    
-    // Don't prevent default scrolling behavior
-    // This allows the page to scroll normally when swiping vertically
+    setTouchEndX(e.touches[0].clientX);
   };
   
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchDiff = touchStartX.current - touchEndX.current;
-    
-    // Minimum swipe distance required (in pixels)
+  const handleTouchEnd = () => {
+    // Min swipe distance threshold to trigger slide change
     const minSwipeDistance = 50;
+    const swipeDistance = touchEndX - touchStartX;
     
-    // Only handle horizontal swipes
-    if (Math.abs(touchDiff) > minSwipeDistance) {
-      // Prevent click events after swipe
-      e.preventDefault();
-      
-      if (touchDiff > minSwipeDistance) {
-        nextSlide();
-      } else if (touchDiff < -minSwipeDistance) {
-        prevSlide();
-      }
+    if (swipeDistance > minSwipeDistance) {
+      // Swipe right, go to previous slide
+      prevSlide();
+    } else if (swipeDistance < -minSwipeDistance) {
+      // Swipe left, go to next slide
+      nextSlide();
     }
     
-    // Reset touch positions
-    touchStartX.current = 0;
-    touchEndX.current = 0;
+    // Reset touch coordinates
+    setTouchStartX(0);
+    setTouchEndX(0);
   };
   
   return (
@@ -124,21 +144,22 @@ const TikTokVoices: React.FC = () => {
             </svg>
           </button>
 
-          {/* TikTok Carousel with improved video content display */}
+          {/* Professional TikTok Carousel with loading states and optimized rendering */}
           <div className="mx-auto" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div 
               ref={containerRef}
               className="tiktok-carousel-container relative mx-auto"
               style={{
-                width: '280px',
-                height: '500px',
+                width: '360px', // Further increased width for better fit
+                maxWidth: '90vw', // Responsive width for mobile
+                height: '560px', // Adjusted height for new proportions
                 margin: '0 auto',
                 boxShadow: '0 0 15px 3px rgba(147, 51, 234, 0.4)',
                 borderRadius: '16px',
                 animation: 'subtle-pulse 3s infinite alternate',
                 position: 'relative', 
                 overflow: 'hidden',
-                backgroundColor: '#000',
+                backgroundColor: '#121212',
                 border: 'none',
                 touchAction: 'pan-y', /* Enable vertical scrolling on mobile */
                 display: 'flex',
@@ -149,70 +170,114 @@ const TikTokVoices: React.FC = () => {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {/* Video 1 */}
-              {activeSlide === 0 && (
-                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7415355047913000222" author="entheogeninsight" />
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="loading-overlay" style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(18, 18, 18, 0.7)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 10,
+                  borderRadius: '16px'
+                }}>
+                  <div className="spinner" style={{
+                    width: '50px',
+                    height: '50px',
+                    border: '4px solid rgba(147, 51, 234, 0.3)',
+                    borderTop: '4px solid rgba(147, 51, 234, 0.9)',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
                 </div>
               )}
               
-              {/* Video 2 */}
-              {activeSlide === 1 && (
-                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7216268901723951407" author="entheogeninsight" />
-                </div>
-              )}
+              {/* Dynamic video rendering from videos array */}
+              {videos.map((video, index) => (
+                activeSlide === index && (
+                  <div 
+                    key={video.videoId} 
+                    className="carousel-slide" 
+                    style={{ 
+                      width: '100%', 
+                      height: '100%',
+                      opacity: isLoading ? '0.3' : '1',
+                      transition: 'opacity 0.3s ease-in-out'
+                    }}
+                  >
+                    <TikTokVideoCard 
+                      videoId={video.videoId} 
+                      author={video.author}
+                    />
+                  </div>
+                )
+              ))}
               
-              {/* Video 3 */}
-              {activeSlide === 2 && (
-                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7215189553415145771" author="entheogeninsight" />
-                </div>
-              )}
-              
-              {/* Video 4 */}
-              {activeSlide === 3 && (
-                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7346732457308069166" author="sporewave" />
-                </div>
-              )}
-              
-              {/* Video 5 */}
-              {activeSlide === 4 && (
-                <div className="carousel-slide" style={{ width: '100%', height: '100%' }}>
-                  <TikTokVideoCard videoId="7347959263780943659" author="sporewave" />
-                </div>
-              )}
+              {/* CSS for spinner animation */}
+              <style dangerouslySetInnerHTML={{
+                __html: `
+                  @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                  }
+                `
+              }} />
             </div>
           </div>
         </div>
         
-        {/* Pagination dots */}
-        <div className="flex justify-center mt-4 gap-2">
-          {Array.from({ length: totalSlides }).map((_, index) => (
+        {/* Enhanced pagination dots with active state animation */}
+        <div className="pagination-dots flex justify-center mt-4">
+          {[...Array(totalSlides)].map((_, i) => (
             <button
-              key={index}
-              onClick={() => setActiveSlide(index)}
-              className="w-2 h-2 rounded-full bg-gray-400 transition-all duration-200"
+              key={i}
+              onClick={() => setActiveSlide(i)}
+              className={`pagination-dot mx-1 ${activeSlide === i ? 'active' : ''}`}
+              aria-label={`Go to slide ${i + 1}`}
               style={{
-                transform: index === activeSlide ? 'scale(1.5)' : 'scale(1)',
-                backgroundColor: index === activeSlide ? '#9333ea' : 'rgba(255,255,255,0.5)',
-                boxShadow: index === activeSlide ? '0 0 8px #9333ea' : 'none'
+                width: activeSlide === i ? '12px' : '10px',
+                height: activeSlide === i ? '12px' : '10px',
+                borderRadius: '50%',
+                backgroundColor: activeSlide === i ? 'rgba(147, 51, 234, 0.9)' : 'rgba(255, 255, 255, 0.5)',
+                border: 'none',
+                padding: 0,
+                transition: 'all 0.3s ease',
+                transform: activeSlide === i ? 'scale(1.2)' : 'scale(1)',
+                boxShadow: activeSlide === i ? '0 0 8px rgba(147, 51, 234, 0.5)' : 'none'
               }}
-              aria-label={`Go to video ${index + 1}`}
             />
           ))}
         </div>
         
+        {/* Professional TikTok follow button */}
         <div className="text-center mt-8">
           <a 
             href="https://www.tiktok.com/@sporewave" 
-            className="btn btn-primary inline-flex items-center space-x-2"
-            target="_blank"
-            rel="noreferrer"
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 rounded-full text-white font-medium transition-all duration-300 hover:shadow-lg"
+            style={{
+              boxShadow: '0 4px 12px rgba(140, 0, 255, 0.2)',
+              transform: 'translateY(0)',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseEnter={(e) => {
+              const target = e.currentTarget as HTMLElement;
+              target.style.transform = 'translateY(-2px)';
+              target.style.boxShadow = '0 6px 16px rgba(140, 0, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              const target = e.currentTarget as HTMLElement;
+              target.style.transform = 'translateY(0)';
+              target.style.boxShadow = '0 4px 12px rgba(140, 0, 255, 0.2)';
+            }}
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M19.321 5.562a4.174 4.174 0 0 1-1.866-1.703 4.08 4.08 0 0 1-.431-2.566h-3.38v17.275c0 .904-.726 1.637-1.63 1.637a1.63 1.63 0 0 1-1.633-1.63c0-.904.732-1.635 1.633-1.635.19 0 .367.037.536.101v-3.369a5.025 5.025 0 0 0-.536-.03c-2.767 0-5.012 2.246-5.012 5.01 0 2.767 2.245 5.012 5.012 5.012 2.764 0 5.01-2.245 5.01-5.011V9.773a8.907 8.907 0 0 0 5.144 1.63V7.991a5.537 5.537 0 0 1-2.847-.784v-1.645z"/>
             </svg>
             <span>Follow on TikTok</span>
           </a>
