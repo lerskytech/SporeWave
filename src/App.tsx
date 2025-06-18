@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 // GitHub section removed per user request
-import TikTokVoices from './components/TikTokVoices';
+import TwitterFeed from './components/TwitterFeed';
 import Research from './components/Research';
 import SonicHealing from './components/SonicHealing';
 import Donation from './components/Donation';
@@ -15,7 +15,7 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <TikTokVoices />
+        <TwitterFeed />
         <Research />
         <SonicHealing />
         <Donation />
